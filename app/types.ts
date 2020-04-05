@@ -9,6 +9,23 @@ export interface Item {
   recovered: number;
 }
 
+export type Stat =
+  | 'confirmedNewDaily'
+  | 'confirmedNewWeekly'
+  | 'confirmedRatioDaily'
+  | 'confirmedRatioWeekly'
+  | 'deathsNewDaily'
+  | 'deathsRatioDaily'
+  | 'deathsNewWeekly'
+  | 'deathsRatioWeekly';
+
+export const Stats: Stat[] = [
+  'confirmedNewWeekly',
+  'confirmedRatioWeekly',
+  'deathsNewWeekly',
+  'deathsRatioWeekly',
+];
+
 export interface ItemApp extends Item {
   countryName: Country;
   confirmedNewDaily: number;
@@ -16,9 +33,9 @@ export interface ItemApp extends Item {
   confirmedRatioDaily: number;
   confirmedRatioWeekly: number;
   deathsNewDaily: number;
-  // deathsNewWeekly: number;
+  deathsNewWeekly: number;
   deathsRatioDaily: number;
-  // deathsRatioWeekly: number;
+  deathsRatioWeekly: number;
 }
 
 export type ItemsDict = Dict<Item[]>;

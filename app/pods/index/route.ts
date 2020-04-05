@@ -65,6 +65,23 @@ export default class Index_Route extends Route {
             ? confirmedNewWeekly / item.confirmed
             : 0;
 
+        const deathsNewWeekly = times(countWeekly).reduce((result, day) => {
+          const newIndex = index - day;
+
+          if (newIndex <= 0) {
+            return result;
+          }
+
+          const deathsNewDaily = items[newIndex].deaths - items[newIndex - 1].deaths;
+          return result + deathsNewDaily;
+        }, 0);
+
+        // prettier-ignore
+        const deathsRatioWeekly =
+          item.deaths > 0
+            ? deathsNewWeekly / item.deaths
+            : 0;
+
         return {
           ...item,
           countryName,
@@ -74,6 +91,8 @@ export default class Index_Route extends Route {
           confirmedRatioWeekly,
           deathsNewDaily,
           deathsRatioDaily,
+          deathsNewWeekly,
+          deathsRatioWeekly,
         };
       });
     });

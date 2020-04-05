@@ -1,8 +1,43 @@
 <div local-class="Index">
-  <EmberChart
-    local-class="Index-Chart"
-    @type="line"
-    @data={{this.chartData}}
-    @options={{this.chartOptions}}
-  />
+
+  <div local-class="Index-Header">
+    <div>
+      <h1 local-class="Index-Heading">
+        Coronavirus epidemic severity per country
+
+        <a href="https://github.com/lolmaus/covisual#covisual">
+          What is this?
+        </a>
+      </h1>
+    </div>
+
+    <div>
+      {{#each this.options as |option|}}
+        <label local-class="Index-Option {{if option.isBold "-bold"}}">
+          <input
+            type="radio"
+            checked={{eq this.option option}} onclick={{fn this.selectOption option}}
+          >
+
+          <span>
+            {{option.label}}
+          </span>
+        </label>
+      {{/each}}
+    </div>
+  </div>
+
+  <div local-class="Index-Content">
+    <div local-class="Index-Content-Inner">
+      <EmberChart
+        local-class="Index-Chart"
+        @type="line"
+        @data={{this.chartData}}
+        @options={{this.chartOptions}}
+      />
+    </div>
+  </div>
 </div>{{! Index }}
+
+{{!log this.model}}
+{{!log this.chartData}}

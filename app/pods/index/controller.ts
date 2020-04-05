@@ -1,10 +1,18 @@
 import Controller from '@ember/controller';
-import { ItemApp, ChartData, Country } from 'covisual/types';
+import { ItemApp, ChartData, Country, Stat } from 'covisual/types';
 import { Index_Route_Model } from './route';
 import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
 
 // @ts-ignore
 import distinctColors from 'distinct-colors';
+
+interface Option {
+  label: string;
+  isLogarithmic: boolean;
+  stat: Stat;
+  isBold: boolean;
+}
 
 export default class Index extends Controller {
   model!: Index_Route_Model;
@@ -54,6 +62,47 @@ export default class Index extends Controller {
     'United Kingdom',
   ];
 
+  options: Option[] = [
+    {
+      label: 'New weekly cases (linear)',
+      isLogarithmic: false,
+      stat: 'confirmedNewWeekly',
+      isBold: false,
+    },
+    {
+      label: 'New weekly cases (logarithmic)',
+      isLogarithmic: true,
+      stat: 'confirmedNewWeekly',
+      isBold: false,
+    },
+    {
+      label: 'Weekly/total cases ratio (linear)',
+      isLogarithmic: false,
+      stat: 'confirmedRatioWeekly',
+      isBold: true,
+    },
+    {
+      label: 'New weekly deaths (linear)',
+      isLogarithmic: false,
+      stat: 'deathsNewWeekly',
+      isBold: false,
+    },
+    {
+      label: 'New weekly deaths (logarithmic)',
+      isLogarithmic: true,
+      stat: 'deathsNewWeekly',
+      isBold: false,
+    },
+    {
+      label: 'Weekly/total deaths ratio (linear)',
+      isLogarithmic: false,
+      stat: 'deathsRatioWeekly',
+      isBold: true,
+    },
+  ];
+
+  @tracked option: Option = this.options.findBy('stat', 'confirmedRatioWeekly')!;
+
   get itemsAppArrays(): ItemApp[][] {
     return this.model.itemsAppArrays;
   }
@@ -80,7 +129,7 @@ export default class Index extends Controller {
 
         return {
           label,
-          data: itemsApp.map(({ confirmedRatioWeekly }) => confirmedRatioWeekly),
+          data: itemsApp.map((item) => item[this.option.stat]),
           fill: false,
           hidden: !this.countryNamesSelected.includes(label),
           borderColor: colors[index],
@@ -89,34 +138,49 @@ export default class Index extends Controller {
     };
   }
 
-  @tracked
-  chartOptions = {
-    legend: {
-      position: 'right',
-    },
-
-    maintainAspectRatio: false,
-
-    plugins: {
-      datalabels: {
-        align: 'end',
-        anchor: 'end',
-        color: function (context: any): string {
-          return context.dataset.borderColor;
-        },
-        font: function (context: any): any {
-          const w = context.chart.width;
-          return {
-            size: w < 512 ? 12 : 14,
-          };
-        },
-        formatter: function (_value: number, context: any): string {
-          return context.dataset.label;
-        },
-        rotation: -45,
+  get chartOptions(): any {
+    return {
+      legend: {
+        position: 'right',
       },
-    },
-  };
+
+      maintainAspectRatio: false,
+
+      plugins: {
+        datalabels: {
+          align: 'end',
+          anchor: 'end',
+          color: function (context: any): string {
+            return context.dataset.borderColor;
+          },
+          font: function (context: any): any {
+            const w = context.chart.width;
+            return {
+              size: w < 512 ? 12 : 14,
+            };
+          },
+          formatter: function (_value: number, context: any): string {
+            return context.dataset.label;
+          },
+          rotation: -45,
+        },
+      },
+
+      scales: {
+        yAxes: [
+          {
+            display: true,
+            type: this.option.isLogarithmic ? 'logarithmic' : 'linear',
+          },
+        ],
+      },
+    };
+  }
+
+  @action
+  selectOption(option: Option): void {
+    this.option = option;
+  }
 }
 
 // DO NOT DELETE: this is how TypeScript knows how to look up your controllers.
