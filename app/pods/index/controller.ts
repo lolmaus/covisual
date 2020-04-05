@@ -3,9 +3,7 @@ import { ItemApp, ChartData, Country, Stat } from 'covisual/types';
 import { Index_Route_Model } from './route';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-
-// @ts-ignore
-import distinctColors from 'distinct-colors';
+import palette from 'covisual/utils/palette';
 
 interface Option {
   label: string;
@@ -114,13 +112,7 @@ export default class Index extends Controller {
   }
 
   get chartData(): ChartData {
-    const colors: string[] = distinctColors({
-      count: this.itemsAppArraysFiltered.length,
-      lightMin: 20,
-      lightMax: 80,
-      samples: this.itemsAppArraysFiltered.length,
-      // @ts-ignore
-    }).map((chroma) => chroma.hex());
+    const colors: string[] = palette(this.itemsAppArraysFiltered.length);
 
     return {
       labels: this.itemsAppArraysFiltered[0].mapBy('date'),

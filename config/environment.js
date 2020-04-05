@@ -45,5 +45,10 @@ module.exports = function (environment) {
     ENV.APP.autoboot = false;
   }
 
+  if (environment === 'production') {
+    ENV.rootURL = '/covisual';
+    ENV.locationType = 'hash';
+  }
+
   return ENV;
 };
