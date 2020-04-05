@@ -1,6 +1,6 @@
 # covisual
 
-https://lolmaus.gihub.io/covisual
+https://lolmaus.github.io/covisual/
 
 
 
