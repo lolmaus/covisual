@@ -1,0 +1,20 @@
+.flash-messages {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: $zindex-popover;
+
+  :global(.alert) {
+    transition: all 300ms;
+    transform: translateY(-150%);
+
+    &:global(.active) {
+      transform: translateY(0);
+
+      &:global(.exiting) {
+        transform: translateY(-150%);
+      }
+    }
+  }
+}

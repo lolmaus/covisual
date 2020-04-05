@@ -1,10 +1,49 @@
 'use strict';
 
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
+const fingerprintExtensions = require('broccoli-asset-rev/lib/default-options').extensions;
 
-module.exports = function(defaults) {
-  let app = new EmberApp(defaults, {
-    // Add options here
+module.exports = function (defaults) {
+  const app = new EmberApp(defaults, {
+    'ember-bootstrap': {
+      bootstrapVersion: 4,
+      importBootstrapFont: false,
+      importBootstrapCSS: false,
+      whitelist: ['bs-button', 'bs-modal'],
+    },
+
+    'ember-composable-helpers': {
+      only: [],
+    },
+
+    'ember-math-helpers': {
+      only: [],
+    },
+
+    cssModules: {
+      headerModules: ['covisual/styles/app'],
+    },
+
+    fingerprint: {
+      extensions: fingerprintExtensions.concat(['svg']),
+      fingerprintAssetMap: true,
+      generateAssetMap: true,
+      prepend: '/',
+    },
+
+    svgJar: {
+      strategy: 'inline',
+      sourceDirs: ['public/assets/icons'],
+      optimizer: {
+        plugins: [
+          {
+            inlineStyles: {
+              onlyMatchedOnce: false, // this is needed to inline all styles, and remove the error prone <style>
+            },
+          },
+        ],
+      },
+    },
   });
 
   // Use `app.import` to add additional libraries to the generated

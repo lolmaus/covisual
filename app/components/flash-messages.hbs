@@ -1,0 +1,7 @@
+{{#if this.flashMessages.queue.length}}
+  <div local-class="flash-messages">
+    {{#each this.flashMessages.queue as |flashMessage|}}
+      <FlashMessage @flash={{flashMessage}} data-test-flash-message={{flashMessage.type}}/>
+    {{/each}}
+  </div>
+{{/if}}

@@ -1,0 +1,16 @@
+a {
+  svg {
+    fill: $link-color !important;
+    stroke: $link-color !important;
+  }
+
+  &:hover svg {
+    fill: $link-hover-color !important;
+    stroke: $link-hover-color !important;
+  }
+}
+
+svg .hidden {
+  opacity: 0;
+  transition: opacity $easing-soft;
+}

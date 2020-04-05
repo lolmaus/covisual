@@ -1,50 +1,48 @@
 'use strict';
 
-module.exports = function(environment) {
-  let ENV = {
-    modulePrefix: 'covisual',
+module.exports = function (environment) {
+  const ENV = {
     environment,
+
+    modulePrefix: 'covisual',
+    podModulePrefix: 'covisual/pods',
     rootURL: '/',
     locationType: 'auto',
+    apiNamespace: process.env.EMBER_API_NAMESPACE || '',
+    apiHost: process.env.EMBER_API_HOST || '',
+
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
-        // e.g. EMBER_NATIVE_DECORATOR_SUPPORT: true
+        // e.g. EMBER_MODULE_UNIFICATION: true
+        EMBER_METAL_TRACKED_PROPERTIES: true,
       },
       EXTEND_PROTOTYPES: {
         // Prevent Ember Data from overriding Date.parse.
-        Date: false
-      }
+        Date: false,
+      },
     },
 
     APP: {
       // Here you can pass flags/options to your application instance
       // when it is created
-    }
+      LOG_RESOLVER: process.env.EMBER_DEBUG_LOG_RESOLVER === 'true',
+      LOG_ACTIVE_GENERATION: process.env.EMBER_DEBUG_LOG_ACTIVE_GENERATION === 'true',
+      LOG_TRANSITIONS: process.env.EMBER_DEBUG_LOG_TRANSITIONS === 'true',
+      LOG_TRANSITIONS_INTERNAL: process.env.EMBER_DEBUG_LOG_TRANSITIONS_INTERNAL === 'true',
+      LOG_VIEW_LOOKUPS: process.env.EMBER_DEBUG_LOG_VIEW_LOOKUPS === 'true',
+    },
+
+    'ember-cli-mirage': {
+      // enabled: process.env.EMBER_MOCK_MIRAGE === 'true',
+      enabled: false,
+    },
   };
 
-  if (environment === 'development') {
-    // ENV.APP.LOG_RESOLVER = true;
-    // ENV.APP.LOG_ACTIVE_GENERATION = true;
-    // ENV.APP.LOG_TRANSITIONS = true;
-    // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
-    // ENV.APP.LOG_VIEW_LOOKUPS = true;
-  }
-
   if (environment === 'test') {
-    // Testem prefers this...
     ENV.locationType = 'none';
-
-    // keep test console output quieter
-    ENV.APP.LOG_ACTIVE_GENERATION = false;
-    ENV.APP.LOG_VIEW_LOOKUPS = false;
-
     ENV.APP.rootElement = '#ember-testing';
     ENV.APP.autoboot = false;
-  }
-
-  if (environment === 'production') {
-    // here you can enable a production-specific feature
   }
 
   return ENV;
