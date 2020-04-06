@@ -2,7 +2,7 @@ import Controller from '@ember/controller';
 import { ItemApp, ChartData, Country, Stat } from 'covisual/types';
 import { Index_Route_Model } from './route';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
+import { action, computed } from '@ember/object';
 import palette from 'covisual/utils/palette';
 
 interface Option {
@@ -74,8 +74,8 @@ export default class Index extends Controller {
       isBold: false,
     },
     {
-      label: 'Weekly/total cases ratio (linear)',
-      isLogarithmic: false,
+      label: 'Weekly/total cases ratio (logarithmic)',
+      isLogarithmic: true,
       stat: 'confirmedRatioWeekly',
       isBold: true,
     },
@@ -92,8 +92,8 @@ export default class Index extends Controller {
       isBold: false,
     },
     {
-      label: 'Weekly/total deaths ratio (linear)',
-      isLogarithmic: false,
+      label: 'Weekly/total deaths ratio (logarithmic)',
+      isLogarithmic: true,
       stat: 'deathsRatioWeekly',
       isBold: true,
     },
@@ -111,9 +111,12 @@ export default class Index extends Controller {
     );
   }
 
-  get chartData(): ChartData {
-    const colors: string[] = palette(this.itemsAppArraysFiltered.length);
+  @computed('countryNamesAvailable.[]')
+  get palette(): string[] {
+    return palette(this.countryNamesAvailable.length);
+  }
 
+  get chartData(): ChartData {
     return {
       labels: this.itemsAppArraysFiltered[0].mapBy('date'),
       datasets: this.itemsAppArraysFiltered.map((itemsApp: ItemApp[], index: number) => {
@@ -124,7 +127,7 @@ export default class Index extends Controller {
           data: itemsApp.map((item) => item[this.option.stat]),
           fill: false,
           hidden: !this.countryNamesSelected.includes(label),
-          borderColor: colors[index],
+          borderColor: this.palette[index],
         };
       }),
     };
@@ -138,25 +141,25 @@ export default class Index extends Controller {
 
       maintainAspectRatio: false,
 
-      plugins: {
-        datalabels: {
-          align: 'end',
-          anchor: 'end',
-          color: function (context: any): string {
-            return context.dataset.borderColor;
-          },
-          font: function (context: any): any {
-            const w = context.chart.width;
-            return {
-              size: w < 512 ? 12 : 14,
-            };
-          },
-          formatter: function (_value: number, context: any): string {
-            return context.dataset.label;
-          },
-          rotation: -45,
-        },
-      },
+      // plugins: {
+      //   datalabels: {
+      //     align: 'end',
+      //     anchor: 'end',
+      //     color: function (context: any): string {
+      //       return context.dataset.borderColor;
+      //     },
+      //     font: function (context: any): any {
+      //       const w = context.chart.width;
+      //       return {
+      //         size: w < 512 ? 12 : 14,
+      //       };
+      //     },
+      //     formatter: function (_value: number, context: any): string {
+      //       return context.dataset.label;
+      //     },
+      //     rotation: -45,
+      //   },
+      // },
 
       scales: {
         yAxes: [

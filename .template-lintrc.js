@@ -6,5 +6,6 @@ module.exports = {
     'no-bare-strings': false,
     'no-implicit-this': true,
     'no-inline-styles': false,
+    'no-log': false,
   },
 };
