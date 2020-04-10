@@ -114,7 +114,7 @@ export default class Index extends Controller {
     );
   }
 
-  @computed('itemAppGroupsSelected', 'minCases')
+  @computed('itemAppGroupsSelected', 'minCases', 'subject')
   get itemAppGroupsSelectedFiltered(): ItemAppGroup[] {
     return this.itemAppGroupsSelected.map((itemAppGroup) => {
       return {
