@@ -2,14 +2,14 @@
   "assets": {
     "assets/assetMap.json": "assets/assetMap-cd33192964e8c20af9391de38dbf449b.json",
     "assets/auto-import-fastboot.js": "assets/auto-import-fastboot-d41d8cd98f00b204e9800998ecf8427e.js",
-    "assets/covisual.css": "assets/covisual-94608dd7c528a8c30a3b649d3bdc5011.css",
-    "assets/covisual.js": "assets/covisual-27c20b8c08ebc4720e125e5db27efa7e.js",
+    "assets/covisual.css": "assets/covisual-2e2a00a652766e97268fda181c135864.css",
+    "assets/covisual.js": "assets/covisual-a4bdb7d06c5fcc246bb9975433c9391d.js",
     "assets/intl/intl.complete.js": "assets/intl/intl.complete-9cf0a3c17db9a42c82bf6ee151ffb0bf.js",
     "assets/intl/intl.js": "assets/intl/intl-7c662d84d9c24b3bf5cd4d04d8a49104.js",
     "assets/intl/intl.min.js": "assets/intl/intl.min-2d83656b91128d68eeecfd97b9dd79af.js",
     "assets/intl/locales/en-us.js": "assets/intl/locales/en-us-f0c5d465ba90e2edd44f76df823a4f02.js",
     "assets/vendor.css": "assets/vendor-d3aa84b783735f00b7be359e81298bf2.css",
-    "assets/vendor.js": "assets/vendor-e6e82de4e4a1db9a0038327dada41986.js"
+    "assets/vendor.js": "assets/vendor-4161c89b174938e34932b9746810a521.js"
   },
   "prepend": "/"
 }
