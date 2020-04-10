@@ -15,7 +15,7 @@ It is based on a simple metric explained [in this video](https://www.youtube.com
 This metric has a number of wonderful features:
 
 * It is a universal indicator of the current level of control per country.
-* It lets you compare countries regardless of how many tests each country is doing per day. The only requirement is that they keep doing them consistently. (Lack of consistency can be seen as a sudden spike followed by sudden drop, as it appears in the beginning of the history of most countries. Note that China starts with a bunch of confirmed cases on day 1 of the time range, so it is not affected by the inconsistency spike.)
+* It lets you compare countries regardless of how many tests each country is doing per day. The only requirement is that they keep doing them consistently.
 * It lets you compare countries regardless of their population size.
 
 This metric does NOT account for:

@@ -11,21 +11,65 @@
       </h1>
     </div>
 
-    <div>
-      {{#each this.options as |option|}}
-        <label local-class="Index-Option {{if option.isBold "-bold"}}">
-          <input
-            type="radio"
-            checked={{eq this.option option}} onclick={{fn this.selectOption option}}
-          >
+    <div local-class="Index-Header-Options">
+      <div local-class="Index-Header-Option _metric">
+        <span local-class="Index-Header-Option-Label">
+          {{t "routes.index.options.metric"}}
+        </span>
 
-          <span>
-            {{option.label}}
+        <PowerSelect
+          @options={{this.metrics}}
+          @selected={{this.metric}}
+          @onChange={{this.selectMetric}}
+          as |metric|
+        >
+          <span
+            local-class="Index-Metric"
+            class={{if (eq metric "ratio-new-weekly-total") "-bold"}}
+          >
+            {{t (concat "routes.index.options.metrics." metric)}}
           </span>
-        </label>
-      {{/each}}
-    </div>
-  </div>
+        </PowerSelect>
+      </div>{{! Header-Option _metric}}
+
+      <div local-class="Index-Header-Option _subject">
+        <span local-class="Index-Header-Option-Label">
+          {{t "routes.index.options.subject"}}
+        </span>
+
+        <PowerSelect
+          @options={{this.subjects}}
+          @selected={{this.subject}}
+          @onChange={{this.selectSubject}}
+          as |subject|
+        >
+          {{t (concat "routes.index.options.subjects." subject)}}
+        </PowerSelect>
+      </div>{{! Header-Option _metric}}
+
+      <label local-class="Index-Header-Option _log">
+        <input
+          type="checkbox"
+          checked={{this.isLogarithmicEffective}}
+          disabled={{this.isLogarithmicToggleDisabled}}
+          {{on "change" this.selectLog}}
+        >
+
+        <span local-class="Index-Header-Option-Label">
+          {{t "routes.index.options.is-logarithmic"}}
+        </span>
+      </label>{{! Header-Option _metric}}
+
+      <div local-class="Index-Header-Option _countries">
+        <button
+          type="button"
+          {{on "click" (fn this.toggleCountriesModal true)}}
+        >
+          {{t "routes.index.options.select-countries"}}
+        </button>
+      </div>{{! Header-Option _metric}}
+    </div>{{! Header-Options }}
+  </div>{{! Header }}
 
   <div local-class="Index-Content">
     <div local-class="Index-Content-Inner">
@@ -39,5 +83,79 @@
   </div>
 </div>{{! Index }}
 
+<BsModalSimple
+  @open={{this.isCountriesModalVisible}}
+  @title={{t "routes.index.countries-modal.title"}}
+  @onHide={{fn this.toggleCountriesModal false}}
+  local-class="Index-Modal"
+>
+  <div>
+    <div>
+      <label>
+        {{t "routes.index.countries-modal.filter"}}
+
+        <input
+          value={{this.countriesModalFilter}}
+          {{on "input" this.filterCountriesInModal}}
+        >
+      </label>
+
+      <button
+        type="button"
+        {{on "click" this.filterCountriesInModalReset}}
+      >
+        ×
+      </button>
+    </div>
+
+    <div>
+      <span>
+        {{t "routes.index.countries-modal.presets"}}
+      </span>
+    </div>
+  </div>
+
+  <div local-class="Index-Modal-CountriesWrapper">
+    <div local-class="Index-Modal-Countries">
+      {{#each this.countriesFilteredForModal as |country|}}
+        <div local-class="Index-Modal-Country">
+          <label local-class="Index-Modal-Country-Label">
+            <input
+              type="checkbox"
+              checked={{contains country this.countriesSelected}}
+              {{on "change" (fn this.toggleCountry country)}}
+            >
+
+            <span>
+              {{t (concat "countries." country)}}
+            </span>
+          </label>
+
+          <button
+            type="button"
+            {{on "click" (fn this.selectCountryOnly country)}}
+          >
+            {{t "routes.index.countries-modal.only"}}
+          </button>
+        </div>
+      {{/each}}
+    </div>
+
+    <div local-class="Index-Modal-Presets">
+      {{#each this.presets as |preset|}}
+        <div>
+          <button
+            type="button"
+            {{on "click" (fn this.selectPreset preset)}}
+          >
+            {{t (concat "presets." preset)}}
+          </button>
+        </div>
+      {{/each}}
+    </div>
+  </div>
+</BsModalSimple>
+
 {{log this.model}}
-{{log this.chartData}}
+{{!log this.chartData}}
+{{log this}}

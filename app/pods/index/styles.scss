@@ -33,9 +33,40 @@
     margin-top: 0;
   }
 
-  .Index-Option {
-    &.-bold {
+  .Index-Header-Options {
+    display: flex;
+    flex-wrap: wrap;
+
+    .Index-Header-Option:not(:last-child) {
+      margin-right: 20px;
+    }
+  }
+
+  .Index-Header-Option {
+    display: flex;
+    align-items: center;
+
+    > *:first-child {
+      margin-right: 10px;
+    }
+
+    .Index-Header-Option-Label {
+      flex-shrink: 0;
+    }
+  }
+
+  .Index-Metric {
+    &:global(.-bold) {
       font-weight: bold;
     }
+  }
+
+  .Index-Modal-CountriesWrapper {
+    display: flex;
+  }
+
+  .Index-Modal-Countries {
+    max-height: 80vh;
+    overflow-y: scroll;
   }
 }

@@ -7,9 +7,8 @@ module.exports = function (defaults) {
   const app = new EmberApp(defaults, {
     'ember-bootstrap': {
       bootstrapVersion: 4,
-      importBootstrapFont: false,
+      importBootstrapFont: true,
       importBootstrapCSS: false,
-      whitelist: ['bs-button', 'bs-modal'],
     },
 
     'ember-composable-helpers': {

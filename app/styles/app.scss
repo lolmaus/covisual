@@ -9,9 +9,10 @@
 @import "./utils/layout";
 
 
-// Bootstrap Base
+// Dependencies
 @import "./config/bootstrap";
 @import "ember-bootstrap/bootstrap";
+@import "ember-power-select";
 
 
 // HTML Class (Single Element) Components
