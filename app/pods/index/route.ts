@@ -1,30 +1,61 @@
 import Route from '@ember/routing/route';
-import { ItemsDict, Item, Country, ItemAppGroup } from 'covisual/types';
+import { ItemsDict, Item, CountryName, ItemAppGroup, Country } from 'covisual/types';
 import fetch from 'fetch';
 import { map, times } from 'lodash-es';
+import { inject as service } from '@ember/service';
+import Intl from 'ember-intl/services/intl';
+import palette from 'covisual/utils/palette';
+
+// @ts-ignore
+import { getUserLocales } from 'get-user-locale';
 
 export interface Index_Route_Model {
+  colors: string[];
   dates: string[];
   itemsDict: ItemsDict;
   itemAppGroups: ItemAppGroup[];
 }
 
+const SupportedLocales = ['en', 'ru'];
+
 export default class Index_Route extends Route {
-  async model(): Promise<Index_Route_Model> {
+  @service intl!: Intl;
+
+  queryParams = {
+    lang: { refreshModel: true },
+  };
+
+  get defaultLocale(): string {
+    const locale = getUserLocales().find((locale: string) => {
+      return SupportedLocales.includes(locale.split('-')[0]);
+    });
+
+    return locale?.split('-')[0] || SupportedLocales[0];
+  }
+
+  async model({ lang }: { lang: string }): Promise<Index_Route_Model> {
+    this.intl.setLocale(lang || this.defaultLocale);
+
     const itemsResponse = await fetch('https://pomber.github.io/covid19/timeseries.json');
     const itemsDict: ItemsDict = await itemsResponse.json();
+    const colors = palette(Object.keys(itemsDict).length);
 
     return {
+      colors,
       dates: itemsDict.US.mapBy('date'),
       itemsDict,
-      itemAppGroups: this.parseData(itemsDict),
+      itemAppGroups: this.parseData(itemsDict, colors),
     };
   }
 
-  parseData(itemsDict: ItemsDict): ItemAppGroup[] {
-    return map(itemsDict, (items: Item[], country: Country) => {
+  parseData(itemsDict: ItemsDict, colors: string[]): ItemAppGroup[] {
+    let i = -1;
+
+    return map(itemsDict, (items: Item[], country: CountryName) => {
+      i++;
+
       return {
-        country,
+        country: new Country(this, country, colors[i]),
         items: items.map((item: Item, index: number) => {
           // prettier-ignore
           const confirmedNewDaily =
@@ -100,6 +131,8 @@ export default class Index_Route extends Route {
           };
         }),
       };
-    }).filter((itemAppGroup) => itemAppGroup.items.length);
+    })
+      .filter((itemAppGroup) => itemAppGroup.items.length)
+      .sortBy('country.countryLoc');
   }
 }

@@ -61,12 +61,47 @@
     }
   }
 
-  .Index-Modal-CountriesWrapper {
-    display: flex;
+  .Index-Modal {
+    .Index-Modal-Filter {
+      margin-bottom: 20px;
+    }
+
+    :global(.modal-dialog) {
+      max-width: 700px;
+    }
+
+    :global(.modal-footer) {
+      display: none;
+    }
   }
 
-  .Index-Modal-Countries {
-    max-height: 80vh;
-    overflow-y: scroll;
+  .Index-Modal-Main {
+    display: flex;
+
+    .Index-Modal-Countries {
+      flex-grow: 1;
+      max-height: 80vh;
+      overflow-y: auto;
+      margin-right: 20px;
+    }
+
+    .Index-Modal-Presets {
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+  }
+
+  .Index-Modal-Country {
+    > * {
+      vertical-align: middle;
+    }
+
+    .Index-Modal-Country-Label {
+        display: inline;
+    }
+  }
+
+  .Index-Modal-Presets {
+    flex-shrink: 0;
   }
 }

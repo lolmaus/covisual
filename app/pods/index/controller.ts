@@ -1,26 +1,27 @@
 import Controller from '@ember/controller';
 import {
-  Country,
+  CountryName,
   ItemAppGroup,
   Metric,
   Subject,
-  CountriesAfrica,
-  CountriesAsia,
-  CountriesEurope,
-  CountriesNorthAmerica,
-  CountriesSouthAmerica,
-  CountriesAustralia,
-  CountriesShips,
+  CountriesAfrica as CountryNamesAfrica,
+  CountriesAsia as CountryNamesAsia,
+  CountriesEurope as CountryNamesEurope,
+  CountriesNorthAmerica as CountryNamesNorthAmerica,
+  CountriesSouthAmerica as CountryNamesSouthAmerica,
+  CountriesAustralia as CountryNamesAustralia,
+  CountriesShips as CountryNamesShips,
   Preset,
   ItemApp,
   Stat,
+  Country,
+  Dict,
 } from 'covisual/types';
 import { Index_Route_Model } from './route';
 import { tracked } from '@glimmer/tracking';
 import { action, computed } from '@ember/object';
-import palette from 'covisual/utils/palette';
 import { readOnly } from '@ember/object/computed';
-import { without } from 'lodash-es';
+import { without, keyBy } from 'lodash-es';
 
 export default class Index extends Controller {
   readonly model!: Index_Route_Model;
@@ -37,7 +38,7 @@ export default class Index extends Controller {
     'metric',
     'subject',
     {isLogarithmic: {as: 'log'}},
-    {countriesSelectedSerialized: {as: 'countries'}},
+    {countryNamesSelectedSerialized: {as: 'countries'}},
     {isCountriesModalVisible: {as: 'select-countries'}},
     {minCases: {as: 'min-cases'}},
   ];
@@ -48,7 +49,7 @@ export default class Index extends Controller {
   @tracked minCases = 100;
 
   @tracked isCountriesModalVisible = false;
-  @tracked countriesSelectedSerialized = '';
+  @tracked countryNamesSelectedSerialized = '';
   @tracked countriesModalFilter = '';
 
   readonly presets = Object.values(Preset);
@@ -73,15 +74,15 @@ export default class Index extends Controller {
 
   @computed('itemsAppGroupsTop30Confirmed')
   get countriesTop30Confirmed(): Country[] {
-    return this.itemsAppGroupsTop30Confirmed.mapBy('country').sort();
+    return this.itemsAppGroupsTop30Confirmed.mapBy('country').sortBy('countryLoc');
   }
 
   @computed('itemsAppGroupsTop30Confirmed')
   get countriesTop30Deaths(): Country[] {
-    return this.itemsAppGroupsTop30Deaths.mapBy('country').sort();
+    return this.itemsAppGroupsTop30Deaths.mapBy('country').sortBy('countryLoc');
   }
 
-  @computed('countriesDefault')
+  @computed('countriesTop30Confirmed')
   get countriesDefaultSerialized(): string {
     return this._serializeCountries(this.countriesTop30Confirmed);
   }
@@ -91,20 +92,27 @@ export default class Index extends Controller {
     return this.itemAppGroups.mapBy('country');
   }
 
+  @computed('countries')
+  get countriesByCountryName(): Dict<Country> {
+    return keyBy(this.countries, 'countryName');
+  }
+
   @computed('countriesModalFilter')
   get countriesFilteredForModal(): Country[] {
     return this.countriesModalFilter.length
-      ? this.countries.filter((country) =>
-          country.toLowerCase().includes(this.countriesModalFilter.toLocaleLowerCase())
-        )
+      ? this.countries
+          .filter((country) =>
+            country.countryLoc.toLowerCase().includes(this.countriesModalFilter.toLocaleLowerCase())
+          )
+          .sortBy('countryLoc')
       : this.countries;
   }
 
-  @computed('countriesSelectedSerialized')
+  @computed('countryNamesSelectedSerialized')
   get countriesSelected(): Country[] {
-    return this.countriesSelectedSerialized === ''
+    return this.countryNamesSelectedSerialized === ''
       ? this.countriesTop30Confirmed
-      : this._deserializeCountries(this.countriesSelectedSerialized);
+      : this._deserializeCountries(this.countryNamesSelectedSerialized);
   }
 
   @computed('countriesSelected', 'itemAppGroups')
@@ -178,62 +186,32 @@ export default class Index extends Controller {
       .items.mapBy('date');
   }
 
-  private _serializeCountries(countries: Country[]): string {
-    return countries
-      .map((country) => {
-        // prettier-ignore
-        return country
-          .replace(/,/g, '~')
-          .replace(/ /g, '_');
-      })
-      .join('.');
-  }
-
-  private _deserializeCountries(countriesSerialized: string): Country[] {
-    // prettier-ignore
-    return countriesSerialized
-      .split('.')
-      .map((countrySerialized) => {
-        // prettier-ignore
-        return countrySerialized
-          .replace(/~/g, ',')
-          .replace(/_/g, ' ') as Country;
-      });
-  }
-
   get dates(): string[] {
     return this.model.dates;
-  }
-
-  @computed('countriesSelected.[]')
-  get palette(): string[] {
-    return palette(this.countriesSelected.length);
   }
 
   get chartData(): any {
     return {
       labels: this.datesEffective,
-      datasets: this.itemAppGroupsSelectedFiltered.map(
-        (itemsAppGroup: ItemAppGroup, index: number) => {
-          const country = itemsAppGroup.country;
+      datasets: this.itemAppGroupsSelectedFiltered.map((itemsAppGroup: ItemAppGroup) => {
+        const country = itemsAppGroup.country;
 
-          return {
-            label: country,
-            data: itemsAppGroup.items.map((item) => {
-              return {
-                x: item.date,
-                y: item[this.statSelected],
-              };
-            }),
-            fill: false,
-            hidden: !this.countriesSelected.includes(country),
-            borderColor: this.palette[index],
-            borderWidth: 1,
-            pointRadius: 0,
-            pointHitRadius: 3,
-          };
-        }
-      ),
+        return {
+          label: country.countryLoc,
+          data: itemsAppGroup.items.map((item) => {
+            return {
+              x: item.date,
+              y: item[this.statSelected],
+            };
+          }),
+          fill: false,
+          hidden: !this.countriesSelected.includes(country),
+          borderColor: country.color,
+          borderWidth: 1,
+          pointRadius: 0,
+          pointHitRadius: 3,
+        };
+      }),
     };
   }
 
@@ -279,6 +257,43 @@ export default class Index extends Controller {
     };
   }
 
+  private _serializeCountries(countries: Country[]): string {
+    return this._serializeCountryNames(countries.mapBy('countryName'));
+  }
+
+  private _serializeCountryNames(countryNames: CountryName[]): string {
+    return countryNames
+      .map((countryName) => {
+        // prettier-ignore
+        return countryName
+          .replace(/,/g, '~')
+          .replace(/ /g, '_');
+      })
+      .join('.');
+  }
+
+  private _deserializeCountries(countriesSerialized: string): Country[] {
+    // prettier-ignore
+    return countriesSerialized
+      .split('.')
+      .map((countrySerialized) => {
+        // prettier-ignore
+        const countryName: CountryName = countrySerialized
+          .replace(/~/g, ',')
+          .replace(/_/g, ' ') as CountryName;
+
+        return this.countriesByCountryName[countryName];
+      });
+  }
+
+  private _applyCountryNamesSerialized(newCountriesSerialized: string): void {
+    // prettier-ignore
+    this.countryNamesSelectedSerialized =
+      newCountriesSerialized === this.countriesDefaultSerialized
+          ? ''
+          : newCountriesSerialized;
+  }
+
   @action
   selectMetric(metric: Metric): void {
     this.metric = metric;
@@ -315,16 +330,19 @@ export default class Index extends Controller {
 
     const newCountriesSerialized = this._serializeCountries(newCountries);
 
-    // prettier-ignore
-    this.countriesSelectedSerialized =
-      newCountriesSerialized === this.countriesDefaultSerialized
-          ? ''
-          : newCountriesSerialized;
+    this._applyCountryNamesSerialized(newCountriesSerialized);
   }
 
   @action
   selectCountries(countries: Country[]): void {
-    this.countriesSelectedSerialized = this._serializeCountries(countries);
+    const countryNamesSelectedSerialized = this._serializeCountries(countries);
+    this._applyCountryNamesSerialized(countryNamesSelectedSerialized);
+  }
+
+  @action
+  selectCountryNames(countryNames: CountryName[]): void {
+    const countryNamesSelectedSerialized = this._serializeCountryNames(countryNames);
+    this._applyCountryNamesSerialized(countryNamesSelectedSerialized);
   }
 
   @action
@@ -354,31 +372,31 @@ export default class Index extends Controller {
         break;
       }
       case Preset.Africa: {
-        this.selectCountries(CountriesAfrica);
+        this.selectCountryNames(CountryNamesAfrica);
         break;
       }
       case Preset.Asia: {
-        this.selectCountries(CountriesAsia);
+        this.selectCountryNames(CountryNamesAsia);
         break;
       }
       case Preset.Australia: {
-        this.selectCountries(CountriesAustralia);
+        this.selectCountryNames(CountryNamesAustralia);
         break;
       }
       case Preset.Europe: {
-        this.selectCountries(CountriesEurope);
+        this.selectCountryNames(CountryNamesEurope);
         break;
       }
       case Preset.NorthAmerica: {
-        this.selectCountries(CountriesNorthAmerica);
+        this.selectCountryNames(CountryNamesNorthAmerica);
         break;
       }
       case Preset.SouthAmerica: {
-        this.selectCountries(CountriesSouthAmerica);
+        this.selectCountryNames(CountryNamesSouthAmerica);
         break;
       }
       case Preset.Ships: {
-        this.selectCountries(CountriesShips);
+        this.selectCountryNames(CountryNamesShips);
         break;
       }
     }

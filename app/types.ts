@@ -1,3 +1,8 @@
+import { inject as service } from '@ember/service';
+import Intl from 'ember-intl/services/intl';
+import { computed } from '@ember/object';
+import { getOwner, setOwner } from '@ember/application';
+
 export interface Dict<T> {
   [index: string]: T;
 }
@@ -10,7 +15,7 @@ export interface Item {
 }
 
 export interface ItemApp extends Item {
-  country: Country;
+  country: CountryName;
   confirmedNewDaily: number;
   confirmedNewWeekly: number;
   confirmedRatioDaily: number;
@@ -63,7 +68,36 @@ export enum Preset {
   Ships = 'ships',
 }
 
-export type Country =
+export class Country {
+  @service intl?: Intl;
+
+  color: string;
+  countryName: CountryName;
+
+  constructor(ownedInstance: any, countryName: CountryName, color: string) {
+    const owner = getOwner(ownedInstance);
+    setOwner(this, owner);
+
+    this.countryName = countryName;
+    this.color = color;
+  }
+
+  @computed('countryName', 'intl')
+  get countryLoc(): string {
+    if (this.intl) {
+      const key = `countries.${this.countryName}`;
+
+      // prettier-ignore
+      return this.intl.exists(key)
+        ? this.intl.t(key)
+        : this.countryName;
+    } else {
+      return this.countryName;
+    }
+  }
+}
+
+export type CountryName =
   | 'Afghanistan'
   | 'Albania'
   | 'Algeria'
@@ -246,7 +280,7 @@ export type Country =
   | 'Zimbabwe'
   | "Cote d'Ivoire";
 
-export const Countries: Country[] = [
+export const CountrieNames: CountryName[] = [
   'Afghanistan',
   'Albania',
   'Algeria',
@@ -430,7 +464,7 @@ export const Countries: Country[] = [
   "Cote d'Ivoire",
 ];
 
-export const CountriesAfrica: Country[] = [
+export const CountriesAfrica: CountryName[] = [
   'Algeria',
   'Angola',
   'Benin',
@@ -484,7 +518,7 @@ export const CountriesAfrica: Country[] = [
   'Zimbabwe',
 ];
 
-export const CountriesAsia: Country[] = [
+export const CountriesAsia: CountryName[] = [
   'Afghanistan',
   'Armenia',
   'Azerbaijan',
@@ -532,7 +566,7 @@ export const CountriesAsia: Country[] = [
   'Vietnam',
 ];
 
-export const CountriesEurope: Country[] = [
+export const CountriesEurope: CountryName[] = [
   'Albania',
   'Andorra',
   'Austria',
@@ -581,7 +615,7 @@ export const CountriesEurope: Country[] = [
   'United Kingdom',
 ];
 
-export const CountriesNorthAmerica: Country[] = [
+export const CountriesNorthAmerica: CountryName[] = [
   'Antigua and Barbuda',
   'Bahamas',
   'Barbados',
@@ -607,7 +641,7 @@ export const CountriesNorthAmerica: Country[] = [
   'US',
 ];
 
-export const CountriesSouthAmerica: Country[] = [
+export const CountriesSouthAmerica: CountryName[] = [
   'Argentina',
   'Bolivia',
   'Brazil',
@@ -623,7 +657,7 @@ export const CountriesSouthAmerica: Country[] = [
 ];
 
 // prettier-ignore
-export const CountriesAustralia: Country[] = [
+export const CountriesAustralia: CountryName[] = [
   'Australia',
   'Fiji',
   'New Zealand',
@@ -631,7 +665,7 @@ export const CountriesAustralia: Country[] = [
 ];
 
 // prettier-ignore
-export const CountriesShips: Country[] = [
+export const CountriesShips: CountryName[] = [
   'Diamond Princess',
   'MS Zaandam',
 ];

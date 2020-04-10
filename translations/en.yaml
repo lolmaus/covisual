@@ -1,5 +1,8 @@
 routes:
   index:
+    title: The speed at which coronavirus is spreading
+    what-is-this: (what is this?)
+
     options:
       metric: Metric
       subject: Subject
@@ -19,7 +22,23 @@ routes:
       title: Select countries
       filter: Filter
       presets: Presets
+      not-found: No countries match the filter.
       only: only
+
+
+
+presets:
+  africa: Africa
+  asia: Asia
+  australia: Australia and Oceania
+  europe: Europe
+  north-america: North America
+  south-america: South America
+  ships: Ships
+  top-30-by-confirmed: Top 30 by Confirmed Cases
+  top-30-by-deaths: Top 30 by Deaths
+
+
 
 countries:
   "Afghanistan": "Afghanistan"
@@ -63,12 +82,13 @@ countries:
   "Congo (Brazzaville)": "Congo (Brazzaville)"
   "Congo (Kinshasa)": "Congo (Kinshasa)"
   "Costa Rica": "Costa Rica"
+  "Cote d'Ivoire": "Cote d'Ivoire"
   "Croatia": "Croatia"
   "Cuba": "Cuba"
   "Cyprus": "Cyprus"
   "Czechia": "Czechia"
   "Denmark": "Denmark"
-  "Diamond Princess": "Diamond Princess"
+  "Diamond Princess": "zz🚢 Diamond Princess"
   "Djibouti": "Djibouti"
   "Dominica": "Dominica"
   "Dominican Republic": "Dominican Republic"
@@ -95,7 +115,7 @@ countries:
   "Guinea": "Guinea"
   "Guyana": "Guyana"
   "Haiti": "Haiti"
-  "Holy See": "Holy See"
+  "Holy See": "Vatican"
   "Honduras": "Honduras"
   "Hungary": "Hungary"
   "Iceland": "Iceland"
@@ -138,7 +158,7 @@ countries:
   "Montenegro": "Montenegro"
   "Morocco": "Morocco"
   "Mozambique": "Mozambique"
-  "MS Zaandam": "MS Zaandam"
+  "MS Zaandam": "zz🚢 MS Zaandam"
   "Namibia": "Namibia"
   "Nepal": "Nepal"
   "Netherlands": "Netherlands"
@@ -184,7 +204,7 @@ countries:
   "Sweden": "Sweden"
   "Switzerland": "Switzerland"
   "Syria": "Syria"
-  "Taiwan*": "Taiwan*"
+  "Taiwan*": "Taiwan"
   "Tanzania": "Tanzania"
   "Thailand": "Thailand"
   "Timor-Leste": "Timor-Leste"
@@ -205,15 +225,3 @@ countries:
   "Western Sahara": "Western Sahara"
   "Zambia": "Zambia"
   "Zimbabwe": "Zimbabwe"
-  "Cote d'Ivoire": "Cote d'Ivoire"
-
-presets:
-  africa: Africa
-  asia: Asia
-  australia: Australia and Oceania
-  europe: Europe
-  north-america: North America
-  south-america: South America
-  ships: Ships
-  top-30-by-confirmed: Top 30 by Confirmed Cases
-  top-30-by-deaths: Top 30 by Deaths

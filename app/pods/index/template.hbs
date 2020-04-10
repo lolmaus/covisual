@@ -3,10 +3,10 @@
   <div local-class="Index-Header">
     <div>
       <h1 local-class="Index-Heading">
-        Coronavirus epidemic severity per country
+        {{t "routes.index.title"}}
 
         <a href="https://github.com/lolmaus/covisual#covisual">
-          What is this?
+          {{t "routes.index.what-is-this"}}
         </a>
       </h1>
     </div>
@@ -89,7 +89,7 @@
   @onHide={{fn this.toggleCountriesModal false}}
   local-class="Index-Modal"
 >
-  <div>
+  <div local-class="Index-Modal-Filter">
     <div>
       <label>
         {{t "routes.index.countries-modal.filter"}}
@@ -107,15 +107,9 @@
         ×
       </button>
     </div>
-
-    <div>
-      <span>
-        {{t "routes.index.countries-modal.presets"}}
-      </span>
-    </div>
   </div>
 
-  <div local-class="Index-Modal-CountriesWrapper">
+  <div local-class="Index-Modal-Main">
     <div local-class="Index-Modal-Countries">
       {{#each this.countriesFilteredForModal as |country|}}
         <div local-class="Index-Modal-Country">
@@ -127,31 +121,41 @@
             >
 
             <span>
-              {{t (concat "countries." country)}}
+              {{country.countryLoc}}
             </span>
           </label>
 
           <button
+            class="btn btn-link btn-text"
             type="button"
             {{on "click" (fn this.selectCountryOnly country)}}
           >
             {{t "routes.index.countries-modal.only"}}
           </button>
         </div>
+      {{else}}
+        {{t "routes.index.countries-modal.not-found"}}
       {{/each}}
     </div>
 
     <div local-class="Index-Modal-Presets">
-      {{#each this.presets as |preset|}}
-        <div>
-          <button
-            type="button"
-            {{on "click" (fn this.selectPreset preset)}}
-          >
-            {{t (concat "presets." preset)}}
-          </button>
-        </div>
-      {{/each}}
+      <div local-class="Index-Modal-Presets-Title">
+        {{t "routes.index.countries-modal.presets"}}
+      </div>
+
+      <div local-class="Index-Modal-Presets-List">
+        {{#each this.presets as |preset|}}
+          <div>
+            <button
+              class="btn btn-link btn-text"
+              type="button"
+              {{on "click" (fn this.selectPreset preset)}}
+            >
+              {{t (concat "presets." preset)}}
+            </button>
+          </div>
+        {{/each}}
+      </div>
     </div>
   </div>
 </BsModalSimple>

@@ -12,9 +12,14 @@ a {
 
 label {
   cursor: pointer;
+  margin-bottom: 0;
 }
 
 svg .hidden {
   opacity: 0;
   transition: opacity $easing-soft;
+}
+
+.btn-text {
+  padding: 0;
 }
