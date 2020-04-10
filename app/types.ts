@@ -27,8 +27,8 @@ export interface ItemApp extends Item {
 }
 
 export enum Metric {
-  NewWeekly = 'new-weekly',
   Total = 'total',
+  NewWeekly = 'new-weekly',
   RatioNewWeeklyTotal = 'ratio-new-weekly-total',
 }
 

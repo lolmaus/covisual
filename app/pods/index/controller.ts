@@ -220,6 +220,10 @@ export default class Index extends Controller {
     return {
       animation: false,
 
+      hover: {
+        mode: 'asdf',
+      },
+
       legend: {
         position: 'right',
         onClick: (event: Event): void => {
@@ -268,7 +272,6 @@ export default class Index extends Controller {
 
       tooltips: {
         enabled: false,
-        mode: 'index',
         intersect: false,
         custom: (/* tooltip */): void => {
           if (this.hoveredDatasetIndex !== -1) {
