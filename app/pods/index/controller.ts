@@ -51,6 +51,7 @@ export default class Index extends Controller {
   @tracked isCountriesModalVisible = false;
   @tracked countryNamesSelectedSerialized = '';
   @tracked countriesModalFilter = '';
+  @tracked hoveredDatasetIndex = -1;
 
   readonly presets = Object.values(Preset);
 
@@ -193,7 +194,7 @@ export default class Index extends Controller {
   get chartData(): any {
     return {
       labels: this.datesEffective,
-      datasets: this.itemAppGroupsSelectedFiltered.map((itemsAppGroup: ItemAppGroup) => {
+      datasets: this.itemAppGroupsSelectedFiltered.map((itemsAppGroup: ItemAppGroup, index) => {
         const country = itemsAppGroup.country;
 
         return {
@@ -207,7 +208,7 @@ export default class Index extends Controller {
           fill: false,
           hidden: !this.countriesSelected.includes(country),
           borderColor: country.color,
-          borderWidth: 1,
+          borderWidth: index === this.hoveredDatasetIndex ? 10 : 1,
           pointRadius: 0,
           pointHitRadius: 3,
         };
@@ -217,8 +218,18 @@ export default class Index extends Controller {
 
   get chartOptions(): any {
     return {
+      animation: false,
+
       legend: {
         position: 'right',
+        onClick: (event: Event): void => {
+          event.stopPropagation();
+        },
+        onHover: (_event: Event, legendItem: any): void => {
+          if (this.hoveredDatasetIndex !== legendItem.datasetIndex) {
+            this.hoveredDatasetIndex = legendItem.datasetIndex;
+          }
+        },
       },
 
       maintainAspectRatio: false,
@@ -253,6 +264,17 @@ export default class Index extends Controller {
             type: this.isLogarithmicEffective ? 'logarithmic' : 'linear',
           },
         ],
+      },
+
+      tooltips: {
+        enabled: false,
+        mode: 'index',
+        intersect: false,
+        custom: (/* tooltip */): void => {
+          if (this.hoveredDatasetIndex !== -1) {
+            this.hoveredDatasetIndex = -1;
+          }
+        },
       },
     };
   }
