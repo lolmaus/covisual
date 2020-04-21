@@ -73,6 +73,20 @@ export default class Index extends Controller {
     return this.itemAppGroups.sortBy('items.lastObject.deaths').reverse().slice(0, 30);
   }
 
+  @computed('itemAppGroups.[]')
+  get itemsAppGroupsAtLeast1000Confirmed(): ItemAppGroup[] {
+    return this.itemAppGroups.filter(
+      (itemAppGroup) => itemAppGroup.items[itemAppGroup.items.length - 1].confirmed >= 1000
+    );
+  }
+
+  @computed('itemAppGroups.[]')
+  get itemsAppGroupsAtLeast1000Deaths(): ItemAppGroup[] {
+    return this.itemAppGroups.filter(
+      (itemAppGroup) => itemAppGroup.items[itemAppGroup.items.length - 1].deaths >= 1000
+    );
+  }
+
   @computed('itemsAppGroupsTop30Confirmed')
   get countriesTop30Confirmed(): Country[] {
     return this.itemsAppGroupsTop30Confirmed.mapBy('country').sortBy('countryLoc');
@@ -81,6 +95,16 @@ export default class Index extends Controller {
   @computed('itemsAppGroupsTop30Confirmed')
   get countriesTop30Deaths(): Country[] {
     return this.itemsAppGroupsTop30Deaths.mapBy('country').sortBy('countryLoc');
+  }
+
+  @computed('itemsAppGroupsAtLeast1000Confirmed')
+  get countriesAtLeast1000Confirmed(): Country[] {
+    return this.itemsAppGroupsAtLeast1000Confirmed.mapBy('country').sortBy('countryLoc');
+  }
+
+  @computed('itemsAppGroupsAtLeast1000Deaths')
+  get countriesAtLeast1000Deaths(): Country[] {
+    return this.itemsAppGroupsAtLeast1000Deaths.mapBy('country').sortBy('countryLoc');
   }
 
   @computed('countriesTop30Confirmed')
@@ -394,6 +418,18 @@ export default class Index extends Controller {
       }
       case Preset.Top30Deaths: {
         this.selectCountries(this.countriesTop30Deaths);
+        break;
+      }
+      case Preset.AtLeast1000Confirmed: {
+        this.selectCountries(this.countriesAtLeast1000Confirmed);
+        break;
+      }
+      case Preset.AtLeast1000Deaths: {
+        this.selectCountries(this.countriesAtLeast1000Deaths);
+        break;
+      }
+      case Preset.All: {
+        this.selectCountries(this.countries);
         break;
       }
       case Preset.Africa: {

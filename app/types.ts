@@ -59,6 +59,9 @@ export type ItemsDict = Dict<Item[]>;
 export enum Preset {
   Top30Confirmed = 'top-30-by-confirmed',
   Top30Deaths = 'top-30-by-deaths',
+  AtLeast1000Confirmed = 'at-least-1000-confirmed',
+  AtLeast1000Deaths = 'at-least-1000-deaths',
+  All = 'all',
   Africa = 'africa',
   Asia = 'asia',
   Australia = 'australia',

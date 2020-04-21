@@ -37,6 +37,9 @@ presets:
   ships: Корабли
   top-30-by-confirmed: Первые 30 стран по заражению
   top-30-by-deaths: Первые 30 стран по смертям
+  at-least-1000-confirmed: От 1000 зараженных
+  at-least-1000-deaths: От 1000 смертей
+  all: Все
 
 
 

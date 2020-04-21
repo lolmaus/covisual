@@ -37,6 +37,9 @@ presets:
   ships: Ships
   top-30-by-confirmed: Top 30 by Confirmed Cases
   top-30-by-deaths: Top 30 by Deaths
+  at-least-1000-confirmed: At least 1000 Confirmed
+  at-least-1000-deaths: At least 1000 Deaths
+  all: All
 
 
 
